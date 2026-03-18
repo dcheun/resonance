@@ -3,10 +3,11 @@
 import { useStore } from '@tanstack/react-form'
 
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { ttsFormOptions } from '@/features/text-to-speech/components/text-to-speech-form'
-import { useTypedAppFormContext } from '@/hooks/use-app-form'
-import { sliders } from '@/features/text-to-speech/data/sliders'
 import { Slider } from '@/components/ui/slider'
+import { ttsFormOptions } from '@/features/text-to-speech/components/text-to-speech-form'
+import VoiceSelector from '@/features/text-to-speech/components/voice-selector'
+import { sliders } from '@/features/text-to-speech/data/sliders'
+import { useTypedAppFormContext } from '@/hooks/use-app-form'
 
 const SettingsPanelSettings = () => {
   const form = useTypedAppFormContext(ttsFormOptions)
@@ -15,7 +16,7 @@ const SettingsPanelSettings = () => {
     <>
       {/* Voice Style Dropdown Section */}
       <div className='border-b border-dashed p-4'>
-        <p className='text-muted-foreground text-sm'>Voice selector coming soon</p>
+        <VoiceSelector />
       </div>
 
       {/* Voice Adjustments Section */}
