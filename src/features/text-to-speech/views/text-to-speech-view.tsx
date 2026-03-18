@@ -1,23 +1,54 @@
 'use client'
 
+import { useSuspenseQuery } from '@tanstack/react-query'
+
 import SettingsPanel from '@/features/text-to-speech/components/settings-panel'
 import TextInputPanel from '@/features/text-to-speech/components/text-input-panel'
 import TextToSpeechForm, {
   defaultTTSValues,
+  type TTSFormValues,
 } from '@/features/text-to-speech/components/text-to-speech-form'
 import VoicePreviewPlaceholder from '@/features/text-to-speech/components/voice-preview-placeholder'
+import { useTRPC } from '@/trpc/client'
+import { TTSVoicesProvider } from '@/features/text-to-speech/contexts/tts-voices-context'
 
-const TextToSpeechView = () => {
+interface TextToSpeechViewProps {
+  initialValues?: Partial<TTSFormValues>
+}
+
+const TextToSpeechView = ({ initialValues }: TextToSpeechViewProps) => {
+  const trpc = useTRPC()
+
+  const { data: voices } = useSuspenseQuery(trpc.voices.getAll.queryOptions())
+
+  const { custom: customVoices, system: systemVoices } = voices
+  const allVoices = [...customVoices, ...systemVoices]
+  const fallbackVoiceId = allVoices[0]?.id ?? ''
+
+  // Requested voice may no longer exist (deleted); fall back to first available
+  const resolveVoiceId =
+    initialValues?.voiceId && allVoices.some((v) => v.id === initialValues.voiceId)
+      ? initialValues.voiceId
+      : fallbackVoiceId
+
+  const defaultValues: TTSFormValues = {
+    ...defaultTTSValues,
+    ...initialValues,
+    voiceId: resolveVoiceId,
+  }
+
   return (
-    <TextToSpeechForm defaultValues={defaultTTSValues}>
-      <div className='flex min-h-0 flex-1 overflow-hidden'>
-        <div className='flex min-h-0 flex-1 flex-col'>
-          <TextInputPanel />
-          <VoicePreviewPlaceholder />
+    <TTSVoicesProvider value={{ customVoices, systemVoices, allVoices }}>
+      <TextToSpeechForm defaultValues={defaultValues}>
+        <div className='flex min-h-0 flex-1 overflow-hidden'>
+          <div className='flex min-h-0 flex-1 flex-col'>
+            <TextInputPanel />
+            <VoicePreviewPlaceholder />
+          </div>
+          <SettingsPanel />
         </div>
-        <SettingsPanel />
-      </div>
-    </TextToSpeechForm>
+      </TextToSpeechForm>
+    </TTSVoicesProvider>
   )
 }
 
