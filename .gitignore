@@ -32,6 +32,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# But do NOT ignore .env.example
+!.env.example
 
 # vercel
 .vercel
@@ -42,4 +44,17 @@ next-env.d.ts
 
 /src/generated/prisma
 
-/scripts/system-voices
+/scripts/system-voices*
+
+/archive
+
+/voices_cache
+
+/venv
+
+/.idea
+
+chatterbox_tts.py
+
+/backend
+/output
