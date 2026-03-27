@@ -6,7 +6,11 @@ import { CoinsIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import GenerateButton from '@/features/text-to-speech/components/generate-button'
+import HistoryDrawer from '@/features/text-to-speech/components/history-drawer'
+import PromptSuggestions from '@/features/text-to-speech/components/prompt-suggestions'
+import SettingsDrawer from '@/features/text-to-speech/components/settings-drawer'
 import { ttsFormOptions } from '@/features/text-to-speech/components/text-to-speech-form'
+import VoiceSelectorButton from '@/features/text-to-speech/components/voice-selector-button'
 import { COST_PER_UNIT, TEXT_MAX_LENGTH } from '@/features/text-to-speech/data/constants'
 import { useTypedAppFormContext } from '@/hooks/use-app-form'
 
@@ -39,6 +43,12 @@ const TextInputPanel = () => {
       <div className='shrink-0 p-4 lg:p-6'>
         {/* Mobile layout */}
         <div className='flex flex-col gap-3 lg:hidden'>
+          <div className='flex items-center gap-2'>
+            <SettingsDrawer>
+              <VoiceSelectorButton />
+            </SettingsDrawer>
+            <HistoryDrawer />
+          </div>
           <GenerateButton
             className='w-full'
             disabled={isSubmitting}
@@ -74,9 +84,7 @@ const TextInputPanel = () => {
           </div>
         ) : (
           <div className='hidden lg:block'>
-            <p className='text-muted-foreground text-sm'>
-              Get started by typing or pasting text above
-            </p>
+            <PromptSuggestions onSelect={(prompt) => form.setFieldValue('text', prompt)} />
           </div>
         )}
       </div>
